@@ -1,0 +1,106 @@
+-- Variables for player and local stats
+local player = game.Players.LocalPlayer
+local currentBananas = 0  -- Default value
+local currentSnowflakes = 0  -- Default value
+
+-- Create the main screen GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "PasswordScreenGui"
+screenGui.Parent = player:WaitForChild("PlayerGui")  -- Parent the GUI to PlayerGui
+
+-- Password GUI
+local passwordFrame = Instance.new("Frame")
+passwordFrame.Size = UDim2.new(0, 300, 0, 200)
+passwordFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+passwordFrame.BackgroundColor3 = Color3.fromRGB(100, 100, 255)
+passwordFrame.Parent = screenGui
+
+local passwordLabel = Instance.new("TextLabel")
+passwordLabel.Size = UDim2.new(1, 0, 0.4, 0)
+passwordLabel.Position = UDim2.new(0, 0, 0, 0)
+passwordLabel.Text = "Enter Password:"
+passwordLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+passwordLabel.TextScaled = true
+passwordLabel.BackgroundTransparency = 1
+passwordLabel.Parent = passwordFrame
+
+local passwordBox = Instance.new("TextBox")
+passwordBox.Size = UDim2.new(0.8, 0, 0.3, 0)
+passwordBox.Position = UDim2.new(0.1, 0, 0.4, 0)
+passwordBox.PlaceholderText = "Password"
+passwordBox.Text = ""
+passwordBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+passwordBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+passwordBox.Parent = passwordFrame
+
+local submitButton = Instance.new("TextButton")
+submitButton.Size = UDim2.new(0.8, 0, 0.3, 0)
+submitButton.Position = UDim2.new(0.1, 0, 0.75, 0)
+submitButton.Text = "Submit"
+submitButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+submitButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+submitButton.Parent = passwordFrame
+
+-- Main GUI (Hidden initially)
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0.4, 0, 0.6, 0)
+mainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 200)
+mainFrame.Visible = false
+mainFrame.Parent = screenGui
+
+local bananaLabel = Instance.new("TextLabel")
+bananaLabel.Size = UDim2.new(1, 0, 0.2, 0)
+bananaLabel.Position = UDim2.new(0, 0, 0, 0)
+bananaLabel.Text = "Bananas: " .. currentBananas
+bananaLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+bananaLabel.TextScaled = true
+bananaLabel.BackgroundTransparency = 1
+bananaLabel.Parent = mainFrame
+
+local snowflakeLabel = Instance.new("TextLabel")
+snowflakeLabel.Size = UDim2.new(1, 0, 0.2, 0)
+snowflakeLabel.Position = UDim2.new(0, 0, 0.2, 0)
+snowflakeLabel.Text = "Snowflakes: " .. currentSnowflakes
+snowflakeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+snowflakeLabel.TextScaled = true
+snowflakeLabel.BackgroundTransparency = 1
+snowflakeLabel.Parent = mainFrame
+
+local setBananasButton = Instance.new("TextButton")
+setBananasButton.Size = UDim2.new(0.8, 0, 0.2, 0)
+setBananasButton.Position = UDim2.new(0.1, 0, 0.5, 0)
+setBananasButton.Text = "Set Bananas"
+setBananasButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+setBananasButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+setBananasButton.Parent = mainFrame
+
+local setSnowflakesButton = Instance.new("TextButton")
+setSnowflakesButton.Size = UDim2.new(0.8, 0, 0.2, 0)
+setSnowflakesButton.Position = UDim2.new(0.1, 0, 0.7, 0)
+setSnowflakesButton.Text = "Set Snowflakes"
+setSnowflakesButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+setSnowflakesButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+setSnowflakesButton.Parent = mainFrame
+
+-- Password Verification
+local function verifyPassword()
+    if passwordBox.Text == "password123" then
+        passwordFrame.Visible = false  -- Hide the password GUI
+        mainFrame.Visible = true  -- Show the main GUI
+    else
+        passwordLabel.Text = "Incorrect Password!"
+    end
+end
+
+submitButton.MouseButton1Click:Connect(verifyPassword)
+
+-- Set Bananas and Snowflakes
+local function setBananas()
+    local amount = tonumber(player:PromptInput("Enter new Banana amount:")) or 0
+    currentBananas = amount
+    bananaLabel.Text = "Bananas: " .. currentBananas
+end
+
+local function setSnowflakes()
+    local amount = tonumber(player
