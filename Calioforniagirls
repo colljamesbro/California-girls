@@ -51,7 +51,7 @@ sideFrame.Visible = false
 sideFrame.Parent = screenGui
 
 local bananaLabel = Instance.new("TextLabel")
-bananaLabel.Size = UDim2.new(1, 0, 0.2, 0)
+bananaLabel.Size = UDim2.new(1, 0, 0.1, 0)
 bananaLabel.Position = UDim2.new(0, 0, 0, 0)
 bananaLabel.Text = "Bananas: " .. currentBananas
 bananaLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -59,30 +59,40 @@ bananaLabel.TextScaled = true
 bananaLabel.BackgroundTransparency = 1
 bananaLabel.Parent = sideFrame
 
+local bananaInput = Instance.new("TextBox")
+bananaInput.Size = UDim2.new(0.8, 0, 0.1, 0)
+bananaInput.Position = UDim2.new(0.1, 0, 0.2, 0)
+bananaInput.PlaceholderText = "Set Bananas"
+bananaInput.Text = ""
+bananaInput.TextColor3 = Color3.fromRGB(0, 0, 0)
+bananaInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+bananaInput.Parent = sideFrame
+
 local snowflakeLabel = Instance.new("TextLabel")
-snowflakeLabel.Size = UDim2.new(1, 0, 0.2, 0)
-snowflakeLabel.Position = UDim2.new(0, 0, 0.2, 0)
+snowflakeLabel.Size = UDim2.new(1, 0, 0.1, 0)
+snowflakeLabel.Position = UDim2.new(0, 0, 0.4, 0)
 snowflakeLabel.Text = "Snowflakes: " .. currentSnowflakes
 snowflakeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 snowflakeLabel.TextScaled = true
 snowflakeLabel.BackgroundTransparency = 1
 snowflakeLabel.Parent = sideFrame
 
-local setBananasButton = Instance.new("TextButton")
-setBananasButton.Size = UDim2.new(0.8, 0, 0.2, 0)
-setBananasButton.Position = UDim2.new(0.1, 0, 0.5, 0)
-setBananasButton.Text = "Set Bananas"
-setBananasButton.TextColor3 = Color3.fromRGB(0, 0, 0)
-setBananasButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-setBananasButton.Parent = sideFrame
+local snowflakeInput = Instance.new("TextBox")
+snowflakeInput.Size = UDim2.new(0.8, 0, 0.1, 0)
+snowflakeInput.Position = UDim2.new(0.1, 0, 0.6, 0)
+snowflakeInput.PlaceholderText = "Set Snowflakes"
+snowflakeInput.Text = ""
+snowflakeInput.TextColor3 = Color3.fromRGB(0, 0, 0)
+snowflakeInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+snowflakeInput.Parent = sideFrame
 
-local setSnowflakesButton = Instance.new("TextButton")
-setSnowflakesButton.Size = UDim2.new(0.8, 0, 0.2, 0)
-setSnowflakesButton.Position = UDim2.new(0.1, 0, 0.7, 0)
-setSnowflakesButton.Text = "Set Snowflakes"
-setSnowflakesButton.TextColor3 = Color3.fromRGB(0, 0, 0)
-setSnowflakesButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-setSnowflakesButton.Parent = sideFrame
+local applyButton = Instance.new("TextButton")
+applyButton.Size = UDim2.new(0.8, 0, 0.1, 0)
+applyButton.Position = UDim2.new(0.1, 0, 0.8, 0)
+applyButton.Text = "Apply"
+applyButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+applyButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+applyButton.Parent = sideFrame
 
 -- Password Verification
 local function verifyPassword()
@@ -96,18 +106,25 @@ end
 
 submitButton.MouseButton1Click:Connect(verifyPassword)
 
--- Set Bananas and Snowflakes
-local function setBananas()
-    local amount = tonumber(player:PromptInput("Enter new Banana amount:")) or 0
-    currentBananas = amount
-    bananaLabel.Text = "Bananas: " .. currentBananas
+-- Apply Button Functionality
+local function applyChanges()
+    -- Update Bananas
+    local bananaAmount = tonumber(bananaInput.Text)
+    if bananaAmount then
+        currentBananas = bananaAmount
+        bananaLabel.Text = "Bananas: " .. currentBananas
+    else
+        bananaInput.Text = "Invalid Input"
+    end
+
+    -- Update Snowflakes
+    local snowflakeAmount = tonumber(snowflakeInput.Text)
+    if snowflakeAmount then
+        currentSnowflakes = snowflakeAmount
+        snowflakeLabel.Text = "Snowflakes: " .. currentSnowflakes
+    else
+        snowflakeInput.Text = "Invalid Input"
+    end
 end
 
-local function setSnowflakes()
-    local amount = tonumber(player:PromptInput("Enter new Snowflake amount:")) or 0
-    currentSnowflakes = amount
-    snowflakeLabel.Text = "Snowflakes: " .. currentSnowflakes
-end
-
-setBananasButton.MouseButton1Click:Connect(setBananas)
-setSnowflakesButton.MouseButton1Click:Connect(setSnowflakes)
+applyButton.MouseButton1Click:Connect(applyChanges)
