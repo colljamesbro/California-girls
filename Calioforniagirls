@@ -5,13 +5,14 @@ local currentSnowflakes = 0  -- Default value
 
 -- Create the main screen GUI
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "PasswordScreenGui"
+screenGui.Name = "MainGui"
 screenGui.Parent = player:WaitForChild("PlayerGui")  -- Parent the GUI to PlayerGui
 
 -- Password GUI
 local passwordFrame = Instance.new("Frame")
 passwordFrame.Size = UDim2.new(0, 300, 0, 200)
 passwordFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+passwordFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 passwordFrame.BackgroundColor3 = Color3.fromRGB(100, 100, 255)
 passwordFrame.Parent = screenGui
 
@@ -41,13 +42,13 @@ submitButton.TextColor3 = Color3.fromRGB(0, 0, 0)
 submitButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
 submitButton.Parent = passwordFrame
 
--- Main GUI (Hidden initially)
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0.4, 0, 0.6, 0)
-mainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
-mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 200)
-mainFrame.Visible = false
-mainFrame.Parent = screenGui
+-- Side GUI (Hidden initially)
+local sideFrame = Instance.new("Frame")
+sideFrame.Size = UDim2.new(0.2, 0, 0.6, 0)
+sideFrame.Position = UDim2.new(1, -250, 0.2, 0)
+sideFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 200)
+sideFrame.Visible = false
+sideFrame.Parent = screenGui
 
 local bananaLabel = Instance.new("TextLabel")
 bananaLabel.Size = UDim2.new(1, 0, 0.2, 0)
@@ -56,7 +57,7 @@ bananaLabel.Text = "Bananas: " .. currentBananas
 bananaLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 bananaLabel.TextScaled = true
 bananaLabel.BackgroundTransparency = 1
-bananaLabel.Parent = mainFrame
+bananaLabel.Parent = sideFrame
 
 local snowflakeLabel = Instance.new("TextLabel")
 snowflakeLabel.Size = UDim2.new(1, 0, 0.2, 0)
@@ -65,7 +66,7 @@ snowflakeLabel.Text = "Snowflakes: " .. currentSnowflakes
 snowflakeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 snowflakeLabel.TextScaled = true
 snowflakeLabel.BackgroundTransparency = 1
-snowflakeLabel.Parent = mainFrame
+snowflakeLabel.Parent = sideFrame
 
 local setBananasButton = Instance.new("TextButton")
 setBananasButton.Size = UDim2.new(0.8, 0, 0.2, 0)
@@ -73,7 +74,7 @@ setBananasButton.Position = UDim2.new(0.1, 0, 0.5, 0)
 setBananasButton.Text = "Set Bananas"
 setBananasButton.TextColor3 = Color3.fromRGB(0, 0, 0)
 setBananasButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-setBananasButton.Parent = mainFrame
+setBananasButton.Parent = sideFrame
 
 local setSnowflakesButton = Instance.new("TextButton")
 setSnowflakesButton.Size = UDim2.new(0.8, 0, 0.2, 0)
@@ -81,13 +82,13 @@ setSnowflakesButton.Position = UDim2.new(0.1, 0, 0.7, 0)
 setSnowflakesButton.Text = "Set Snowflakes"
 setSnowflakesButton.TextColor3 = Color3.fromRGB(0, 0, 0)
 setSnowflakesButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-setSnowflakesButton.Parent = mainFrame
+setSnowflakesButton.Parent = sideFrame
 
 -- Password Verification
 local function verifyPassword()
     if passwordBox.Text == "password123" then
         passwordFrame.Visible = false  -- Hide the password GUI
-        mainFrame.Visible = true  -- Show the main GUI
+        sideFrame.Visible = true  -- Show the side GUI
     else
         passwordLabel.Text = "Incorrect Password!"
     end
@@ -103,4 +104,10 @@ local function setBananas()
 end
 
 local function setSnowflakes()
-    local amount = tonumber(player
+    local amount = tonumber(player:PromptInput("Enter new Snowflake amount:")) or 0
+    currentSnowflakes = amount
+    snowflakeLabel.Text = "Snowflakes: " .. currentSnowflakes
+end
+
+setBananasButton.MouseButton1Click:Connect(setBananas)
+setSnowflakesButton.MouseButton1Click:Connect(setSnowflakes)
