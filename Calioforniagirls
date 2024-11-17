@@ -1,137 +1,88 @@
--- Client Script (LocalScript) for GUI and password handling
-local correctPassword = "password123"
+-- LocalScript for GUI lock-on system
+
 local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
 
--- Reference the RemoteEvent
-local remote = game.ReplicatedStorage:WaitForChild("SetSnowflakesBananas")
+local targetPlayer = nil  -- Store the target player to lock onto
+local targetPart = nil  -- The part of the target player we will aim at (e.g., HumanoidRootPart)
+local locked = false  -- Whether or not we are locked onto a target
 
--- Create the main screen GUI
+-- Create the main GUI
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = player.PlayerGui
 
--- Password Frame
-local passwordFrame = Instance.new("Frame")
-passwordFrame.Size = UDim2.new(0.5, 0, 0.5, 0)
-passwordFrame.Position = UDim2.new(0.25, 0, 0.25, 0)
-passwordFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-passwordFrame.Parent = screenGui
+-- Create the Lock-On Button
+local lockButton = Instance.new("TextButton")
+lockButton.Size = UDim2.new(0, 200, 0, 50)
+lockButton.Position = UDim2.new(0.5, -100, 0.8, -25)
+lockButton.Text = "Lock-On (Inactive)"
+lockButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+lockButton.TextSize = 24
+lockButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red to show inactive
+lockButton.Parent = screenGui
 
--- Title label
-local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, 0, 0.2, 0)
-titleLabel.Position = UDim2.new(0, 0, 0, 0)
-titleLabel.Text = "Enter Password"
-titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleLabel.TextSize = 24
-titleLabel.BackgroundTransparency = 1
-titleLabel.Parent = passwordFrame
+-- Function to lock onto a target
+local function lockOntoTarget()
+    -- Loop through all players
+    for _, otherPlayer in ipairs(game.Players:GetPlayers()) do
+        if otherPlayer ~= player and otherPlayer.Character then
+            local character = otherPlayer.Character
+            local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+            
+            -- If the player has a humanoidRootPart, lock onto them
+            if humanoidRootPart then
+                targetPlayer = otherPlayer
+                targetPart = humanoidRootPart
+                locked = true
+                break
+            end
+        end
+    end
+end
 
--- Password text box
-local passwordBox = Instance.new("TextBox")
-passwordBox.Size = UDim2.new(0.8, 0, 0.2, 0)
-passwordBox.Position = UDim2.new(0.1, 0, 0.3, 0)
-passwordBox.PlaceholderText = "Enter password"
-passwordBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-passwordBox.TextSize = 18
-passwordBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-passwordBox.Parent = passwordFrame
+-- Function to shoot at the locked player
+local function shootAtTarget()
+    if targetPlayer and targetPart then
+        local direction = (targetPart.Position - mouse.Hit.p).unit  -- Direction to aim
+        local rayOrigin = mouse.Hit.p
+        local ray = Ray.new(rayOrigin, direction * 1000)  -- Create a ray towards the target
 
--- Confirm Button
-local confirmButton = Instance.new("TextButton")
-confirmButton.Size = UDim2.new(0.4, 0, 0.2, 0)
-confirmButton.Position = UDim2.new(0.3, 0, 0.6, 0)
-confirmButton.Text = "Confirm"
-confirmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-confirmButton.TextSize = 20
-confirmButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-confirmButton.Parent = passwordFrame
+        local hitPart, hitPosition = game.Workspace:FindPartOnRay(ray, player.Character, false, true)
+        
+        -- Handle what happens when the ray hits (e.g., damage the target, show effects, etc.)
+        if hitPart then
+            print("Hit: " .. hitPart.Name)  -- Example action: printing hit part
+            -- Here you could implement further actions, like damaging the player or showing effects
+        end
+    end
+end
 
--- Snowflakes and Bananas Frame (hidden initially)
-local snowflakesFrame = Instance.new("Frame")
-snowflakesFrame.Size = UDim2.new(0.5, 0, 0.6, 0)
-snowflakesFrame.Position = UDim2.new(0.25, 0, 0.2, 0)
-snowflakesFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-snowflakesFrame.Visible = false
-snowflakesFrame.Parent = screenGui
-
--- Snowflakes Label
-local snowflakesLabel = Instance.new("TextLabel")
-snowflakesLabel.Size = UDim2.new(1, 0, 0.2, 0)
-snowflakesLabel.Position = UDim2.new(0, 0, 0, 0)
-snowflakesLabel.Text = "Set Your Snowflakes"
-snowflakesLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-snowflakesLabel.TextSize = 24
-snowflakesLabel.BackgroundTransparency = 1
-snowflakesLabel.Parent = snowflakesFrame
-
--- Snowflakes input box
-local snowflakesInput = Instance.new("TextBox")
-snowflakesInput.Size = UDim2.new(0.8, 0, 0.2, 0)
-snowflakesInput.Position = UDim2.new(0.1, 0, 0.3, 0)
-snowflakesInput.PlaceholderText = "Enter Snowflakes"
-snowflakesInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-snowflakesInput.TextSize = 18
-snowflakesInput.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-snowflakesInput.Parent = snowflakesFrame
-
--- Bananas Label
-local bananasLabel = Instance.new("TextLabel")
-bananasLabel.Size = UDim2.new(1, 0, 0.2, 0)
-bananasLabel.Position = UDim2.new(0, 0, 0.4, 0)
-bananasLabel.Text = "Set Your Bananas"
-bananasLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-bananasLabel.TextSize = 24
-bananasLabel.BackgroundTransparency = 1
-bananasLabel.Parent = snowflakesFrame
-
--- Bananas input box
-local bananasInput = Instance.new("TextBox")
-bananasInput.Size = UDim2.new(0.8, 0, 0.2, 0)
-bananasInput.Position = UDim2.new(0.1, 0, 0.6, 0)
-bananasInput.PlaceholderText = "Enter Bananas"
-bananasInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-bananasInput.TextSize = 18
-bananasInput.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-bananasInput.Parent = snowflakesFrame
-
--- Set Button
-local setButton = Instance.new("TextButton")
-setButton.Size = UDim2.new(0.4, 0, 0.2, 0)
-setButton.Position = UDim2.new(0.3, 0, 0.8, 0)
-setButton.Text = "Set Snowflakes & Bananas"
-setButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-setButton.TextSize = 20
-setButton.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
-setButton.Parent = snowflakesFrame
-
--- Function to handle password check
-confirmButton.MouseButton1Click:Connect(function()
-    if passwordBox.Text == correctPassword then
-        -- Hide password frame and show snowflakes/bananas frame
-        passwordFrame.Visible = false
-        snowflakesFrame.Visible = true
-    else
-        -- Display an error message
-        titleLabel.Text = "Incorrect Password"
-        titleLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+-- Handle clicking the lock-on button
+lockButton.MouseButton1Click:Connect(function()
+    if not locked then
+        -- Lock onto the nearest player
+        lockOntoTarget()
+        
+        -- Change button color to green (indicating it's active)
+        lockButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Green
+        lockButton.Text = "Lock-On (Active)"
     end
 end)
 
--- Function to set Snowflakes and Bananas amounts
-setButton.MouseButton1Click:Connect(function()
-    local snowflakesAmount = tonumber(snowflakesInput.Text)
-    local bananasAmount = tonumber(bananasInput.Text)
+-- Shoot when the left mouse button is clicked
+mouse.Button1Down:Connect(function()
+    if locked then
+        shootAtTarget()
+    end
+end)
 
-    if snowflakesAmount and bananasAmount then
-        -- Fire a RemoteEvent to update values on the server
-        remote:FireServer(snowflakesAmount, bananasAmount)
-    else
-        -- If input is not a number, show a warning
-        if not snowflakesAmount then
-            snowflakesInput.Text = "Invalid Snowflakes"
-        end
-        if not bananasAmount then
-            bananasInput.Text = "Invalid Bananas"
-        end
+-- Reset lock when the "R" key is pressed
+mouse.KeyDown:Connect(function(key)
+    if key == "r" then
+        locked = false
+        targetPlayer = nil
+        targetPart = nil
+        lockButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red
+        lockButton.Text = "Lock-On (Inactive)"
     end
 end)
