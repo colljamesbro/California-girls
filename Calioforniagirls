@@ -1,8 +1,8 @@
--- Define the correct password
+-- Client Script (LocalScript) for GUI and password handling
 local correctPassword = "password123"
+local player = game.Players.LocalPlayer
 
 -- Create the main screen GUI
-local player = game.Players.LocalPlayer
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = player.PlayerGui
 
@@ -43,10 +43,10 @@ confirmButton.TextSize = 20
 confirmButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
 confirmButton.Parent = passwordFrame
 
--- Create the Snowflakes GUI
+-- Snowflakes and Bananas Frame (hidden initially)
 local snowflakesFrame = Instance.new("Frame")
-snowflakesFrame.Size = UDim2.new(0.5, 0, 0.5, 0)
-snowflakesFrame.Position = UDim2.new(0.25, 0, 0.25, 0)
+snowflakesFrame.Size = UDim2.new(0.5, 0, 0.6, 0)
+snowflakesFrame.Position = UDim2.new(0.25, 0, 0.2, 0)
 snowflakesFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 snowflakesFrame.Visible = false
 snowflakesFrame.Parent = screenGui
@@ -71,11 +71,31 @@ snowflakesInput.TextSize = 18
 snowflakesInput.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 snowflakesInput.Parent = snowflakesFrame
 
+-- Bananas Label
+local bananasLabel = Instance.new("TextLabel")
+bananasLabel.Size = UDim2.new(1, 0, 0.2, 0)
+bananasLabel.Position = UDim2.new(0, 0, 0.4, 0)
+bananasLabel.Text = "Set Your Bananas"
+bananasLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+bananasLabel.TextSize = 24
+bananasLabel.BackgroundTransparency = 1
+bananasLabel.Parent = snowflakesFrame
+
+-- Bananas input box
+local bananasInput = Instance.new("TextBox")
+bananasInput.Size = UDim2.new(0.8, 0, 0.2, 0)
+bananasInput.Position = UDim2.new(0.1, 0, 0.6, 0)
+bananasInput.PlaceholderText = "Enter Bananas"
+bananasInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+bananasInput.TextSize = 18
+bananasInput.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+bananasInput.Parent = snowflakesFrame
+
 -- Set Button
 local setButton = Instance.new("TextButton")
 setButton.Size = UDim2.new(0.4, 0, 0.2, 0)
-setButton.Position = UDim2.new(0.3, 0, 0.6, 0)
-setButton.Text = "Set Snowflakes"
+setButton.Position = UDim2.new(0.3, 0, 0.8, 0)
+setButton.Text = "Set Snowflakes & Bananas"
 setButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 setButton.TextSize = 20
 setButton.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
@@ -84,7 +104,7 @@ setButton.Parent = snowflakesFrame
 -- Function to handle password check
 confirmButton.MouseButton1Click:Connect(function()
     if passwordBox.Text == correctPassword then
-        -- Hide password frame and show snowflakes frame
+        -- Hide password frame and show snowflakes/bananas frame
         passwordFrame.Visible = false
         snowflakesFrame.Visible = true
     else
@@ -94,26 +114,17 @@ confirmButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- Function to set Snowflakes amount
+-- Function to set Snowflakes and Bananas amounts
 setButton.MouseButton1Click:Connect(function()
     local snowflakesAmount = tonumber(snowflakesInput.Text)
-    if snowflakesAmount then
-        -- Set the Snowflakes leaderboard value for the player
-        local leaderstats = player:FindFirstChild("leaderstats")
-        if leaderstats then
-            local snowflakes = leaderstats:FindFirstChild("Snowflakes")
-            if snowflakes then
-                snowflakes.Value = snowflakesAmount
-            else
-                -- If Snowflakes stat doesn't exist, create it
-                snowflakes = Instance.new("IntValue")
-                snowflakes.Name = "Snowflakes"
-                snowflakes.Parent = leaderstats
-                snowflakes.Value = snowflakesAmount
-            end
-        end
+    local bananasAmount = tonumber(bananasInput.Text)
+    
+    if snowflakesAmount and bananasAmount then
+        -- Fire a RemoteEvent to update values on the server
+        game.ReplicatedStorage.SetSnowflakesBananas:FireServer(snowflakesAmount, bananasAmount)
     else
-        -- If input is not a number
+        -- If input is not a number, show a warning
         snowflakesInput.Text = "Invalid input"
+        bananasInput.Text = "Invalid input"
     end
 end)
