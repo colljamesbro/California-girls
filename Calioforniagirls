@@ -1,7 +1,7 @@
 -- Variables for player and local stats
 local player = game.Players.LocalPlayer
-local currentBananas = 0  -- Default value
-local currentSnowflakes = 0  -- Default value
+local currentBananas = 417781  -- Current Bananas
+local currentSnowflakes = 1058  -- Current Snowflakes
 
 -- Create the main screen GUI
 local screenGui = Instance.new("ScreenGui")
@@ -44,52 +44,56 @@ submitButton.Parent = passwordFrame
 
 -- Side GUI (Hidden initially)
 local sideFrame = Instance.new("Frame")
-sideFrame.Size = UDim2.new(0.2, 0, 0.6, 0)
-sideFrame.Position = UDim2.new(1, -250, 0.2, 0)
+sideFrame.Size = UDim2.new(0.3, 0, 0.5, 0)
+sideFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+sideFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 sideFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 200)
 sideFrame.Visible = false
 sideFrame.Parent = screenGui
 
+-- Labels and Input Fields for Bananas
 local bananaLabel = Instance.new("TextLabel")
-bananaLabel.Size = UDim2.new(1, 0, 0.1, 0)
+bananaLabel.Size = UDim2.new(1, 0, 0.2, 0)
 bananaLabel.Position = UDim2.new(0, 0, 0, 0)
-bananaLabel.Text = "Bananas: " .. currentBananas
+bananaLabel.Text = "Current Bananas: " .. currentBananas
 bananaLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 bananaLabel.TextScaled = true
 bananaLabel.BackgroundTransparency = 1
 bananaLabel.Parent = sideFrame
 
 local bananaInput = Instance.new("TextBox")
-bananaInput.Size = UDim2.new(0.8, 0, 0.1, 0)
-bananaInput.Position = UDim2.new(0.1, 0, 0.2, 0)
-bananaInput.PlaceholderText = "Set Bananas"
+bananaInput.Size = UDim2.new(0.8, 0, 0.15, 0)
+bananaInput.Position = UDim2.new(0.1, 0, 0.25, 0)
+bananaInput.PlaceholderText = "Enter New Bananas"
 bananaInput.Text = ""
 bananaInput.TextColor3 = Color3.fromRGB(0, 0, 0)
 bananaInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 bananaInput.Parent = sideFrame
 
+-- Labels and Input Fields for Snowflakes
 local snowflakeLabel = Instance.new("TextLabel")
-snowflakeLabel.Size = UDim2.new(1, 0, 0.1, 0)
+snowflakeLabel.Size = UDim2.new(1, 0, 0.2, 0)
 snowflakeLabel.Position = UDim2.new(0, 0, 0.4, 0)
-snowflakeLabel.Text = "Snowflakes: " .. currentSnowflakes
+snowflakeLabel.Text = "Current Snowflakes: " .. currentSnowflakes
 snowflakeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 snowflakeLabel.TextScaled = true
 snowflakeLabel.BackgroundTransparency = 1
 snowflakeLabel.Parent = sideFrame
 
 local snowflakeInput = Instance.new("TextBox")
-snowflakeInput.Size = UDim2.new(0.8, 0, 0.1, 0)
-snowflakeInput.Position = UDim2.new(0.1, 0, 0.6, 0)
-snowflakeInput.PlaceholderText = "Set Snowflakes"
+snowflakeInput.Size = UDim2.new(0.8, 0, 0.15, 0)
+snowflakeInput.Position = UDim2.new(0.1, 0, 0.65, 0)
+snowflakeInput.PlaceholderText = "Enter New Snowflakes"
 snowflakeInput.Text = ""
 snowflakeInput.TextColor3 = Color3.fromRGB(0, 0, 0)
 snowflakeInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 snowflakeInput.Parent = sideFrame
 
+-- Apply Changes Button
 local applyButton = Instance.new("TextButton")
-applyButton.Size = UDim2.new(0.8, 0, 0.1, 0)
-applyButton.Position = UDim2.new(0.1, 0, 0.8, 0)
-applyButton.Text = "Apply"
+applyButton.Size = UDim2.new(0.8, 0, 0.15, 0)
+applyButton.Position = UDim2.new(0.1, 0, 0.85, 0)
+applyButton.Text = "Apply Changes"
 applyButton.TextColor3 = Color3.fromRGB(0, 0, 0)
 applyButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
 applyButton.Parent = sideFrame
@@ -106,13 +110,13 @@ end
 
 submitButton.MouseButton1Click:Connect(verifyPassword)
 
--- Apply Button Functionality
+-- Apply Changes Functionality
 local function applyChanges()
     -- Update Bananas
     local bananaAmount = tonumber(bananaInput.Text)
     if bananaAmount then
         currentBananas = bananaAmount
-        bananaLabel.Text = "Bananas: " .. currentBananas
+        bananaLabel.Text = "Current Bananas: " .. currentBananas
     else
         bananaInput.Text = "Invalid Input"
     end
@@ -121,7 +125,7 @@ local function applyChanges()
     local snowflakeAmount = tonumber(snowflakeInput.Text)
     if snowflakeAmount then
         currentSnowflakes = snowflakeAmount
-        snowflakeLabel.Text = "Snowflakes: " .. currentSnowflakes
+        snowflakeLabel.Text = "Current Snowflakes: " .. currentSnowflakes
     else
         snowflakeInput.Text = "Invalid Input"
     end
