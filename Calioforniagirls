@@ -1,7 +1,18 @@
 -- Variables for player and local stats
 local player = game.Players.LocalPlayer
-local currentBananas = 417781  -- Current Bananas
-local currentSnowflakes = 1058  -- Current Snowflakes
+local leaderstats = player:FindFirstChild("leaderstats")  -- Leaderstats for updating actual game stats
+
+local currentBananas = 417781  -- Default Bananas (fallback if leaderstats is missing)
+local currentSnowflakes = 1058  -- Default Snowflakes (fallback if leaderstats is missing)
+
+-- Try to find leaderstats values
+if leaderstats then
+    local bananaStat = leaderstats:FindFirstChild("Bananas")
+    if bananaStat then currentBananas = bananaStat.Value end
+
+    local snowflakeStat = leaderstats:FindFirstChild("Snowflakes")
+    if snowflakeStat then currentSnowflakes = snowflakeStat.Value end
+end
 
 -- Create the main screen GUI
 local screenGui = Instance.new("ScreenGui")
@@ -114,18 +125,26 @@ submitButton.MouseButton1Click:Connect(verifyPassword)
 local function applyChanges()
     -- Update Bananas
     local bananaAmount = tonumber(bananaInput.Text)
-    if bananaAmount then
-        currentBananas = bananaAmount
-        bananaLabel.Text = "Current Bananas: " .. currentBananas
+    if bananaAmount and leaderstats then
+        local bananaStat = leaderstats:FindFirstChild("Bananas")
+        if bananaStat then
+            bananaStat.Value = bananaAmount
+            currentBananas = bananaAmount
+            bananaLabel.Text = "Current Bananas: " .. currentBananas
+        end
     else
         bananaInput.Text = "Invalid Input"
     end
 
     -- Update Snowflakes
     local snowflakeAmount = tonumber(snowflakeInput.Text)
-    if snowflakeAmount then
-        currentSnowflakes = snowflakeAmount
-        snowflakeLabel.Text = "Current Snowflakes: " .. currentSnowflakes
+    if snowflakeAmount and leaderstats then
+        local snowflakeStat = leaderstats:FindFirstChild("Snowflakes")
+        if snowflakeStat then
+            snowflakeStat.Value = snowflakeAmount
+            currentSnowflakes = snowflakeAmount
+            snowflakeLabel.Text = "Current Snowflakes: " .. currentSnowflakes
+        end
     else
         snowflakeInput.Text = "Invalid Input"
     end
