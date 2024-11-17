@@ -1,4 +1,4 @@
--- LocalScript for GUI lock-on system
+-- LocalScript for GUI lock-on system with team color check (avoids Blue team)
 
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
@@ -26,15 +26,18 @@ local function lockOntoTarget()
     -- Loop through all players
     for _, otherPlayer in ipairs(game.Players:GetPlayers()) do
         if otherPlayer ~= player and otherPlayer.Character then
-            local character = otherPlayer.Character
-            local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-            
-            -- If the player has a humanoidRootPart, lock onto them
-            if humanoidRootPart then
-                targetPlayer = otherPlayer
-                targetPart = humanoidRootPart
-                locked = true
-                break
+            -- Check if the player is not on the same team (specifically avoiding "Blue" team)
+            if otherPlayer.TeamColor ~= player.TeamColor then
+                local character = otherPlayer.Character
+                local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                
+                -- If the player has a humanoidRootPart, lock onto them
+                if humanoidRootPart then
+                    targetPlayer = otherPlayer
+                    targetPart = humanoidRootPart
+                    locked = true
+                    break
+                end
             end
         end
     end
@@ -60,7 +63,7 @@ end
 -- Handle clicking the lock-on button
 lockButton.MouseButton1Click:Connect(function()
     if not locked then
-        -- Lock onto the nearest player
+        -- Lock onto the nearest player who is not on the same team (avoiding Blue team)
         lockOntoTarget()
         
         -- Change button color to green (indicating it's active)
