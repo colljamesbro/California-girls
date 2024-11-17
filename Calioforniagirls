@@ -2,6 +2,9 @@
 local correctPassword = "password123"
 local player = game.Players.LocalPlayer
 
+-- Reference the RemoteEvent
+local remote = game.ReplicatedStorage:WaitForChild("SetSnowflakesBananas")
+
 -- Create the main screen GUI
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = player.PlayerGui
@@ -118,13 +121,17 @@ end)
 setButton.MouseButton1Click:Connect(function()
     local snowflakesAmount = tonumber(snowflakesInput.Text)
     local bananasAmount = tonumber(bananasInput.Text)
-    
+
     if snowflakesAmount and bananasAmount then
         -- Fire a RemoteEvent to update values on the server
-        game.ReplicatedStorage.SetSnowflakesBananas:FireServer(snowflakesAmount, bananasAmount)
+        remote:FireServer(snowflakesAmount, bananasAmount)
     else
         -- If input is not a number, show a warning
-        snowflakesInput.Text = "Invalid input"
-        bananasInput.Text = "Invalid input"
+        if not snowflakesAmount then
+            snowflakesInput.Text = "Invalid Snowflakes"
+        end
+        if not bananasAmount then
+            bananasInput.Text = "Invalid Bananas"
+        end
     end
 end)
